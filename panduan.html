@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reiko Stuff Tutor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-color: #fafcfb;
+        --panel-bg: #ffffff;
+        --panel-border: #d2ded7;
+        --sage-main: #6b8272;
+        --sage-light: #f0f4f2;
+        --sage-accent: #4a5c50;
+        --text-main: #2f3e46;
+        --text-muted: #5c6e65;
+        --sparkle-color: #8fa898;
+        --gold-star: #e9c46a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        line-height: 1.6;
+        padding: 40px 16px;
+        background-image:
+          radial-gradient(
+            at 0% 0%,
+            rgba(107, 130, 114, 0.04) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 100% 100%,
+            rgba(107, 130, 114, 0.04) 0px,
+            transparent 50%
+          );
+        background-attachment: fixed;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 650px;
+        margin: 0 auto;
+      }
+
+      /* Elegant Header */
+      header {
+        text-align: center;
+        margin-bottom: 35px;
+      }
+
+      .logo-sparkle {
+        display: inline-block;
+        font-size: 1.6rem;
+        color: var(--sparkle-color);
+        margin-bottom: 6px;
+        animation: pulse 2s infinite alternate ease-in-out;
+      }
+
+      @keyframes pulse {
+        from {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        to {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+      }
+
+      header h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--sage-main);
+        margin-bottom: 6px;
+      }
+
+      header p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .header-divider {
+        width: 50px;
+        height: 1px;
+        background-color: var(--panel-border);
+        margin: 15px auto 0 auto;
+        position: relative;
+      }
+
+      .header-divider::after {
+        content: "✦";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--bg-color);
+        padding: 0 6px;
+        color: var(--sparkle-color);
+        font-size: 0.65rem;
+      }
+
+      /* Custom Stepper Tracker */
+      .progress-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        position: relative;
+        background: var(--panel-bg);
+        padding: 14px 20px;
+        border-radius: 16px;
+        border: 1px solid var(--panel-border);
+        box-shadow: 0 4px 15px rgba(107, 130, 114, 0.02);
+      }
+
+      .progress-line {
+        position: absolute;
+        top: 50%;
+        left: 40px;
+        right: 40px;
+        height: 1px;
+        background: var(--panel-border);
+        z-index: 1;
+        transform: translateY(-50%);
+      }
+
+      .progress-line-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background: var(--sage-main);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .step-node {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        z-index: 2;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .step-node.active {
+        border-color: var(--sage-main);
+        color: var(--sage-main);
+        background: var(--sage-light);
+        font-weight: 700;
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px rgba(107, 130, 114, 0.1);
+      }
+
+      .step-node.completed {
+        border-color: var(--sage-main);
+        background: var(--sage-main);
+        color: #ffffff;
+      }
+
+      /* Content Cards Slider */
+      .card-slider {
+        position: relative;
+        min-height: 360px;
+      }
+
+      .tutorial-card {
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(107, 130, 114, 0.01);
+        display: none;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: all 0.3s ease;
+      }
+
+      @media (min-width: 480px) {
+        .tutorial-card {
+          padding: 35px;
+        }
+      }
+
+      .tutorial-card.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .card-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 100px;
+        background: var(--sage-light);
+        color: var(--sage-main);
+        margin-bottom: 15px;
+        letter-spacing: 0.5px;
+      }
+
+      .tutorial-card h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 12px;
+      }
+
+      @media (min-width: 480px) {
+        .tutorial-card h2 {
+          font-size: 1.7rem;
+        }
+      }
+
+      .instruction-text {
+        color: var(--text-main);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .highlight {
+        color: var(--sage-accent);
+        font-weight: 600;
+        background: var(--sage-light);
+        padding: 2px 5px;
+        border-radius: 5px;
+      }
+
+      /* Visual Graphic Boxes */
+      .visual-box {
+        background: #fdfefe;
+        border: 1px dashed var(--sage-main);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      /* Windows Menu Simulation */
+      .context-menu {
+        max-width: 240px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid var(--panel-border);
+        border-radius: 10px;
+        padding: 5px;
+        box-shadow: 0 5px 15px rgba(107, 130, 114, 0.04);
+      }
+
+      .menu-row {
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: #5c6a62;
+      }
+
+      .menu-row.active-row {
+        background: var(--sage-light);
+        color: var(--sage-accent);
+        font-weight: 600;
+      }
+
+      .click-indicator {
+        font-size: 0.75rem;
+        color: var(--sage-main);
+        background: #ffffff;
+        padding: 1px 6px;
+        border-radius: 4px;
+        border: 1px solid var(--panel-border);
+      }
+
+      /* File & Folder Grid Simulation */
+      .explorer-header {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--panel-border);
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        font-family: monospace;
+      }
+
+      .file-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      @media (min-width: 400px) {
+        .file-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .grid-item {
+        border: 1px solid var(--panel-border);
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 10px 6px;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--text-main);
+        word-break: break-all;
+      }
+
+      .grid-item.target-glow {
+        border-color: var(--sage-main);
+        background: var(--sage-light);
+        font-weight: 600;
+        box-shadow: 0 0 0 3px rgba(107, 130, 114, 0.08);
+      }
+
+      .grid-item .item-icon {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      .grid-item.folder-new-style {
+        border: 1px solid #d4c2ad;
+        background: #fdfaf7;
+        font-weight: 600;
+      }
+
+      /* Info Alert Box */
+      .info-card {
+        background: #f7faf8;
+        border-left: 3px solid var(--sage-main);
+        padding: 12px 16px;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      /* Main Bottom Buttons Layout */
+      .nav-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 12px;
+      }
+
+      .action-btn {
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--panel-bg);
+        color: var(--sage-main);
+        border: 1px solid var(--panel-border);
+        flex: 1;
+        text-align: center;
+      }
+
+      .action-btn:hover:not(:disabled) {
+        background: var(--sage-light);
+        border-color: var(--sage-main);
+      }
+
+      .action-btn.btn-next {
+        background: var(--sage-main);
+        color: #ffffff;
+        border-color: var(--sage-main);
+      }
+
+      .action-btn.btn-next:hover:not(:disabled) {
+        background: var(--sage-accent);
+        border-color: var(--sage-accent);
+      }
+
+      .action-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      /* Interactive Choice Modal Overlay */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(47, 62, 70, 0.25);
+        backdrop-filter: blur(4px);
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        padding: 16px;
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-card {
+        background: #ffffff;
+        border: 1px solid var(--panel-border);
+        border-radius: 20px;
+        padding: 30px 20px;
+        max-width: 360px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(107, 130, 114, 0.06);
+        transform: scale(0.95);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .modal-overlay.active .modal-card {
+        transform: scale(1);
+      }
+
+      .modal-card h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        color: var(--text-main);
+        margin-bottom: 8px;
+      }
+
+      .modal-card p {
+        color: var(--text-muted);
+        margin-bottom: 24px;
+        font-size: 0.9rem;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .modal-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid var(--panel-border);
+      }
+
+      .btn-yes {
+        background: var(--sage-main);
+        color: #ffffff;
+        border-color: var(--sage-main);
+      }
+
+      .btn-yes:hover {
+        background: var(--sage-accent);
+      }
+
+      .btn-no {
+        background: #ffffff;
+        color: #d9383a;
+        border-color: #f7d6d7;
+      }
+
+      .btn-no:hover {
+        background: #fff5f5;
+      }
+
+      /* --- STUNNING ULTRA INTERACTIVE SUCCESS BANNER --- */
+      .success-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-color);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+        padding: 24px;
+        text-align: center;
+      }
+
+      .success-screen.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Live Particle Canvas Background for Confetti Vibe */
+      #successCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1001;
+      }
+
+      .success-content {
+        position: relative;
+        z-index: 1002;
+        max-width: 420px;
+        transform: scale(0.9);
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .success-screen.active .success-content {
+        transform: scale(1);
+      }
+
+      /* Animated Elegant Badge */
+      .crown-container {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px auto;
+        background: var(--sage-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        box-shadow: 0 8px 20px rgba(107, 130, 114, 0.15);
+        animation: bounceIcon 1s infinite alternate ease-in-out;
+      }
+
+      @keyframes bounceIcon {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-8px);
+        }
+      }
+
+      .star-mini {
+        position: absolute;
+        color: var(--gold-star);
+        font-size: 1rem;
+        animation: spinStar 3s infinite linear;
+      }
+      .sm-1 {
+        top: 5px;
+        left: 5px;
+      }
+      .sm-2 {
+        bottom: 8px;
+        right: 2px;
+        animation-delay: 0.5s;
+      }
+
+      @keyframes spinStar {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .success-content h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 4rem;
+        color: var(--sage-main);
+        margin-bottom: 8px;
+        letter-spacing: -1px;
+        text-shadow: 0 4px 10px rgba(107, 130, 114, 0.05);
+      }
+
+      .success-content p {
+        color: var(--text-main);
+        font-size: 1.05rem;
+        font-weight: 500;
+        margin-bottom: 30px;
+      }
+
+      /* Interactive Reward Buttons inside Yay Screen */
+      .celebrate-btn {
+        background: var(--sage-main);
+        color: #ffffff;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 5px 15 rgba(107, 130, 114, 0.2);
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .celebrate-btn:hover {
+        background: var(--sage-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(107, 130, 114, 0.3);
+      }
+
+      .celebrate-btn:active {
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo-sparkle">✦</div>
+        <h1>Reiko Platform Guide</h1>
+        <p>Setup & Configuration Interface</p>
+        <div class="header-divider"></div>
+      </header>
+
+      <div class="progress-wrapper">
+        <div class="progress-line">
+          <div class="progress-line-fill" id="lineFill"></div>
+        </div>
+        <div class="step-node active" onclick="goToStep(1)">1</div>
+        <div class="step-node" onclick="goToStep(2)">2</div>
+        <div class="step-node" onclick="goToStep(3)">3</div>
+        <div class="step-node" onclick="goToStep(4)">4</div>
+      </div>
+
+      <div class="card-slider">
+        <div class="tutorial-card active" id="card1">
+          <span class="card-badge">Langkah 01</span>
+          <h2>Buka Folder Utama Steam</h2>
+          <p class="instruction-text">
+            Pertama,
+            <strong>close aplikasi Steam kamu sampai benar-benar mati</strong>.
+            Terus ke desktop PC, <strong>klik kanan</strong> icon Steam, dan
+            pilih opsi <span class="highlight">Open file location</span> buat
+            langsung masuk ke foldernya.
+          </p>
+
+          <div class="visual-box">
+            <div class="context-menu">
+              <div class="menu-row" style="opacity: 0.35">🗔 Open</div>
+              <div class="menu-row" style="opacity: 0.35">
+                🛡️ Run as administrator
+              </div>
+              <div class="menu-row active-row">
+                <span>📁 Open file location</span>
+                <span class="click-indicator">Klik</span>
+              </div>
+              <div class="menu-row" style="opacity: 0.35">
+                ⭐ Add to Favorites
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <strong>Tips:</strong> Pastikan cek system tray (pojok kanan bawah
+            taskbar) juga ya, pastiin Steam-nya udah beneran exit biar file-nya
+            nggak bentrok.
+          </div>
+        </div>
+
+        <div class="tutorial-card" id="card2">
+          <span class="card-badge">Langkah 02</span>
+          <h2>Copy-Paste File (.dll)</h2>
+          <p class="instruction-text">
+            Ambil <strong>2 file .dll</strong> yang tadi udah kamu download
+            sebelumnya. Langsung
+            <strong>paste ke dalam folder Steam</strong> yang tadi kebuka. Kalau
+            muncul notifikasi dari Windows, langsung klik
+            <span class="highlight">Overwrite / Replace</span> aja.
+          </p>
+
+          <div class="visual-box">
+            <div class="explorer-header">📂 Root Folder: Steam /</div>
+            <div class="file-grid">
+              <div class="grid-item"><span class="item-icon">📁</span>bin</div>
+              <div class="grid-item">
+                <span class="item-icon">📁</span>config
+              </div>
+              <div class="grid-item target-glow">
+                <span class="item-icon">⚙️</span>unlocker.dll
+              </div>
+              <div class="grid-item target-glow">
+                <span class="item-icon">⚙️</span>dwmapi.dll
+              </div>
+              <div class="grid-item" style="opacity: 0.5">
+                <span class="item-icon">⚙️</span>steam.exe
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tutorial-card" id="card3">
+          <span class="card-badge">Langkah 03</span>
+          <h2>Bikin Folder "lua"</h2>
+          <p class="instruction-text">
+            Masih di dalam folder Steam tadi, cari dan masuk ke folder yang
+            namanya <span class="highlight">config</span>. Di dalam folder
+            config itu, <strong>bikin folder baru</strong> dan kasih nama
+            <span class="highlight">lua</span>. Ingat ya,
+            <strong>wajib huruf kecil semua!</strong>
+          </p>
+
+          <div class="visual-box">
+            <div class="explorer-header">
+              📂 Folder Directory: Steam / config /
+            </div>
+            <div class="file-grid">
+              <div class="grid-item" style="opacity: 0.4">
+                <span class="item-icon">📁</span>avatarcache
+              </div>
+              <div class="grid-item folder-new-style">
+                <span class="item-icon">📁</span>lua
+              </div>
+              <div class="grid-item" style="opacity: 0.4">
+                <span class="item-icon">📄</span>config.vdf
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tutorial-card" id="card4">
+          <span class="card-badge">Langkah 04</span>
+          <h2>Masukin File Script Lua</h2>
+          <p class="instruction-text">
+            Sekarang masuk ke folder <span class="highlight">lua</span> yang
+            baru aja kamu bikin.
+            <strong>Pindahin file script Lua kamu</strong> (contohnya file
+            <span class="highlight">2483190.lua</span>) ke dalam folder ini.
+            Kalau udah, tinggal buka lagi deh aplikasi Steam kamu. Selesai!
+          </p>
+
+          <div class="visual-box">
+            <div class="explorer-header">
+              📂 Folder Directory: Steam / config / lua /
+            </div>
+            <div class="file-grid">
+              <div
+                class="grid-item target-glow"
+                style="grid-column: span 3; padding: 14px"
+              >
+                <span class="item-icon">📄</span>2483190.lua
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-controls">
+        <button class="action-btn" id="btnBack" onclick="moveStep(-1)" disabled>
+          Back
+        </button>
+        <button class="action-btn btn-next" id="btnNext" onclick="moveStep(1)">
+          Next
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+      <div class="modal-card">
+        <h3>Mengerti?</h3>
+        <p>
+          Gimana, semua langkah-langkah instalasi di atas udah berhasil kamu
+          ikutin dan pahami?
+        </p>
+        <div class="modal-buttons">
+          <button class="modal-btn btn-yes" onclick="processResponse(true)">
+            Mengerti
+          </button>
+          <button class="modal-btn btn-no" onclick="processResponse(false)">
+            Tidak
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-screen" id="successScreen">
+      <canvas id="successCanvas"></canvas>
+      <div class="success-content">
+        <div class="crown-container">
+          <span>🌸</span>
+          <div class="star-mini sm-1">✦</div>
+          <div class="star-mini sm-2">✦</div>
+        </div>
+        <h2>Yay!</h2>
+        <p>
+          Mantap! Konfigurasi sistemnya udah beres semua tanpa kendala. Kamu
+          emang keren banget!
+        </p>
+        <button class="celebrate-btn" onclick="triggerExtraConfetti()">
+          <span>✦</span> Rayakan Lagi! <span>✦</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let currentStep = 1;
+      const maxSteps = 4;
+      let canvas, ctx, animationFrameId;
+      let particles = [];
+
+      function updateDisplay() {
+        document.querySelectorAll(".tutorial-card").forEach((card, idx) => {
+          card.classList.toggle("active", idx + 1 === currentStep);
+        });
+
+        document.querySelectorAll(".step-node").forEach((node, idx) => {
+          const stepNum = idx + 1;
+          node.classList.toggle("active", stepNum === currentStep);
+          node.classList.toggle("completed", stepNum < currentStep);
+        });
+
+        const fillPercent = ((currentStep - 1) / (maxSteps - 1)) * 100;
+        document.getElementById("lineFill").style.width = fillPercent + "%";
+
+        document.getElementById("btnBack").disabled = currentStep === 1;
+
+        const nextBtn = document.getElementById("btnNext");
+        if (currentStep === maxSteps) {
+          nextBtn.innerText = "Finish";
+        } else {
+          nextBtn.innerText = "Next";
+        }
+      }
+
+      function moveStep(direction) {
+        currentStep += direction;
+        if (currentStep < 1) currentStep = 1;
+        if (currentStep > maxSteps) {
+          currentStep = maxSteps;
+          document.getElementById("confirmModal").classList.add("active");
+          return;
+        }
+        updateDisplay();
+      }
+
+      function goToStep(targetStep) {
+        currentStep = targetStep;
+        updateDisplay();
+      }
+
+      function processResponse(isUnderstood) {
+        document.getElementById("confirmModal").classList.remove("active");
+        if (isUnderstood) {
+          document.getElementById("successScreen").classList.add("active");
+          initConfetti();
+        } else {
+          window.location.href =
+            "https://www.youtube.com/watch?v=tVWdu7kO3Co&list=RDtVWdu7kO3Co&start_radio=1";
+        }
+      }
+
+      /* --- IMMERSIVE CUSTOM CONFETTI PARTICLE SYSTEM --- */
+      function initConfetti() {
+        canvas = document.getElementById("successCanvas");
+        ctx = canvas.getContext("2d");
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        const colors = [
+          "#6b8272",
+          "#a3b899",
+          "#dde7da",
+          "#e9c46a",
+          "#f4a261",
+          "#f0f4f2",
+        ];
+        for (let i = 0; i < 120; i++) {
+          particles.push(createParticle(colors));
+        }
+        animateParticles();
+      }
+
+      function createParticle(colors) {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          radius: Math.random() * 4 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedX: Math.random() * 3 - 1.5,
+          speedY: Math.random() * 3 + 2,
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 4 - 2,
+        };
+      }
+
+      function resizeCanvas() {
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+      }
+
+      function triggerExtraConfetti() {
+        const colors = ["#6b8272", "#a3b899", "#dde7da", "#e9c46a", "#4a5c50"];
+        for (let i = 0; i < 60; i++) {
+          particles.push({
+            x: canvas.width / 2,
+            y: canvas.height * 0.7,
+            radius: Math.random() * 4 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            speedX: Math.random() * 8 - 4,
+            speedY: Math.random() * -6 - 4,
+            rotation: Math.random() * 360,
+            rotationSpeed: Math.random() * 6 - 3,
+          });
+        }
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, index) => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += p.rotationSpeed;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+
+          ctx.fillRect(-p.radius, -p.radius, p.radius * 1.5, p.radius * 2);
+          ctx.restore();
+
+          if (p.y > canvas.height) {
+            particles[index] = createParticle([
+              "#6b8272",
+              "#a3b899",
+              "#dde7da",
+              "#e9c46a",
+              "#f4a261",
+            ]);
+            particles[index].y = -20;
+          }
+        });
+
+        animationFrameId = requestAnimationFrame(animateParticles);
+      }
+
+      updateDisplay();
+    </script>
+  </body>
+</html>
